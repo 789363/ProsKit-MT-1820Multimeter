@@ -33,37 +33,37 @@ class MT1820:
     
     def parse_data(self, data):
         if not data:
-            return 'Error'  # 如果没有读到数据，返回Error
+            return 'Error'  #沒有數據回傳Error
         
         if data.startswith(b'+?'):
-            return 'Error'  # 如果数据不合法，返回Error
+            return 'Error'  # 數據異常回傳Error
 
         try:
             string_value = data[:5].decode('iso-8859-1').strip().replace('\r', '').replace('\n', '')
             if string_value == "":
-                return 'Error'  # 如果数据解析后为空，返回Error
+                return 'Error'  # 數據為空回傳Error
 
             # 尝试解析数值
             decimal_point = int(data[6])
             try:
                 value = float(string_value[:decimal_point] + '.' + string_value[decimal_point:])
                 if value != 0:
-                    return 'Fail'  # 数值不等于0，返回Fail
+                    return 'Fail'  # 異常電流
                 else:
-                    return 'Pass'  # 数值等于0，返回Pass
+                    return 'Pass'  # 正常
             except ValueError:
-                return 'Error'  # 数值转换失败，返回Error
+                return 'Error'  # 數值轉換失敗
         except Exception as e:
-            return 'Error'  # 处理数据时出现任何异常，返回Error
+            return 'Error'  # 數值轉換失敗
     
     def read_data(self):
         try:
             while True:
-                data = self.port.read(32)  # 读取32字节
+                data = self.port.read(32)  # 讀取32bit
                 result = self.parse_data(data)
-                print(result)  # 打印结果
+                print(result)  # Print結果
         except serial.SerialException:
-            print('Error')  # 串口读取失败
+            print('Error')  # 串口讀取失敗
 
 if __name__ == "__main__":
     multimeter = MT1820('COM3', 2400)
